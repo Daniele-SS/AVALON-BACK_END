@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: AVALON — Plataforma Integrada de Gestão e Conformidade do Funcionário
-  version: 1.2.0
+  version: 2.0.0
   description: |
     API REST do **AVALON**, plataforma de gestão de pessoas, saúde organizacional e conformidade (NR-1). Atende três clientes: **Web** (RH e Gestor) e **Mobile** (Colaborador), todos consumindo este mesmo contrato.
 
@@ -107,10 +107,10 @@ info:
   license:
     name: MIT
 servers:
-- url: http://localhost:3030
-  description: Desenvolvimento local (ajustar porta)
+- url: http://localhost:8080
+  description: Desenvolvimento local #(ajustar porta)
 - url: https://homologacao.avalon.example
-  description: Homologação (placeholder — substituir pela URL real)
+  description: Homologação #(placeholder — substituir pela URL real)
 security:
 - bearerAuth: []
 tags:
