@@ -10,10 +10,10 @@
 const config_message = require('../modulo/configMessages.js') 
 
 //Import do arquivo DAO para fazer o CRUD do filme no banco de dados
-const jornadaEscalaDAO = require('../../model/DAO/menu/menu.js')
+const jornadaEscalaDAO = require('../../model/DAO/jornada_escala/jornada_escala.js')
 
 //Função para inserir um novo filme
-const inserirNovoMenu = async function(menu, contentType){
+const inserirNovoJornadaEscala = async function(jornadaEscala, contentType){
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
@@ -22,21 +22,21 @@ const inserirNovoMenu = async function(menu, contentType){
     //Validação para o tipo de dados da requisição (somente JSON)
     if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-    let validar = await validarDados(menu)
+    let validar = await validarDados(jornadaEscala)
 
     if(validar){
         return validar // 400
     }
     else{
 
-        let result = await menuDAO.insertMenu(menu)
+        let result = await jornadaEscalaDAO.insertJornadaEscala(jornadaEscala)
 
         if(result){ // 201            
-            menu.id = result
+            jornadaEscala.id = result
             message.DEFAULT_MESSAGE.status      = message.SUCCESS_CREATED_ITEM.status
             message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
             message.DEFAULT_MESSAGE.message     = message.SUCCESS_CREATED_ITEM.message
-            message.DEFAULT_MESSAGE.response    = menu
+            message.DEFAULT_MESSAGE.response    = jornadaEscala
         }else{ // 500
             return message.ERROR_INTERNAL_SERVER_MODEL // 500
         }
@@ -52,7 +52,7 @@ const inserirNovoMenu = async function(menu, contentType){
 }
 
 //Função para atualizar um filme
-const atualizarMenu = async function(menu, id, contentType){
+const atualizarJornadaEscala = async function(jornadaEscala, id, contentType){
     let message = JSON.parse(JSON.stringify(config_message))
 
     try{
@@ -60,24 +60,24 @@ const atualizarMenu = async function(menu, id, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
             //Validação para o id incorreto
-            let resultBuscarID = await buscarMenu(id)
+            let resultBuscarID = await buscarJornadaEscala(id)
 
             //o retorno da função poderá ser um 400 ou 404 ou até mesmo um 500
             if(resultBuscarID.status){
-                let validar = await validarDados(menu, contentType)
+                let validar = await validarDados(jornadaEscala, contentType)
 
                 //Validação de campos obrigatórios para atualização (Body)
                 if(!validar){
 
-                    menu.id = id
+                    jornadaEscala.id = id
 
-                    let result = await menuDAO.updateMenu(menu)
+                    let result = await jornadaEscalaDAO.updateMenu(jornadaEscala)
 
                     if(result){
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_UPDATED_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCESS_UPDATED_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCESS_UPDATED_ITEM.message
-                        message.DEFAULT_MESSAGE.response    = menu
+                        message.DEFAULT_MESSAGE.response    = jornadaEscala
                         return message.DEFAULT_MESSAGE //200 (Atualizado)
                     }else{
                         return message.ERROR_INTERNAL_SERVER_MODEL //500
@@ -99,14 +99,14 @@ const atualizarMenu = async function(menu, id, contentType){
     
 }
 
-const listarMenu = async function(){
+const listarJornadaEscala = async function(){
 
     //Criando clone do objeto JSON para manipular a estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
 
     try {
 
-        let result = await menuDAO.selectAllMenu()
+        let result = await jornadaEscalaDAO.selectAllJornadaEscala()
 
         //Validação para verificar se DAO conseguiu processar os dados
         if(result){
@@ -128,7 +128,7 @@ const listarMenu = async function(){
     }
 }
 
-const buscarMenu = async function(id){
+const buscarJornadaEscala = async function(id){
      //Criando clone do objeto JSON para manipular a estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
 
@@ -138,7 +138,7 @@ const buscarMenu = async function(id){
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERROR_BAD_REQUEST // 400
         }else{
-            let result = await menuDAO.selectByIdMenu(id)
+            let result = await jornadaEscalaDAO.selectByIdJornadaEscala(id)
 
             if(result){
                 if(result.length > 0){
@@ -158,16 +158,16 @@ const buscarMenu = async function(id){
         }
 }
 
-const excluirMenu = async function(id){
+const excluirjornadaEscala = async function(id){
     let message = JSON.parse(JSON.stringify(config_message))
 
     try{
         //Validação do erro 400 e do 404
-        let resultBuscarID = await buscarMenu(id)
+        let resultBuscarID = await buscarJornadaEscala(id)
 
         if(resultBuscarID.status){
 
-            let result = await menuDAO.deleteMenu(id)
+            let result = await jornadaEscalaDAO.deleteJornadaEscala(id)
 
             if(result){
                 return  message.SUCESS_DELETED_ITEM //200 (Registro excluido)
@@ -183,25 +183,30 @@ const excluirMenu = async function(id){
     }
 }
 
-const validarDados = async function(menu){
+const validarDados = async function(jornadaEscala){
      //Criando clone do objeto JSON para manipular a estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
 
-    if(menu.nome == undefined || menu.nome == '' || menu.nome == null || menu.nome.length > 50){
+    if(jornadaEscala.nome == undefined || jornadaEscala.nome == '' || jornadaEscala.nome == null || jornadaEscala.nome.length > 100){
         message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400
         
-    }else if(menu.icone == undefined || menu.icone == '' || menu.icone == null || menu.icone.length > 150 ){
+    }else if(jornadaEscala.descricao == undefined || jornadaEscala.descricao == '' || jornadaEscala.descricao == null || jornadaEscala.descricao.length > 255 ){
         message.ERROR_BAD_REQUEST.field = '[ICONE] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
-    }else if(menu.rota == undefined || menu.rota == '' || menu.rota == null || menu.rota.length > 255){
+    }else if(jornadaEscala.hora_inicio == undefined || jornadaEscala.hora_inicio == '' || jornadaEscala.hora_inicio == null ){
         message.ERROR_BAD_REQUEST.field = '[ROTA] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
-    }else if(menu.ordem == undefined || menu.ordem == '' || menu.ordem == null){
+    }else if(jornadaEscala.hora_fim == undefined || jornadaEscala.hora_fim == '' || jornadaEscala.hora_fim == null){
         message.ERROR_BAD_REQUEST.field = '[ORDEM] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
+        
+    }else if(setor.status === undefined || setor.status === null || setor.status === '' || (setor.status !== 0 && setor.status !== 1 && setor.status !== '0' && setor.status !== '1')){
+        message.ERROR_BAD_REQUEST.field = '[ORDEM] INVÁLIDO'
+        return message.ERROR_BAD_REQUEST
+
     }else{
         return false
     }
