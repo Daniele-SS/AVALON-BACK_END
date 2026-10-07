@@ -15,7 +15,7 @@ const swaggerDocument = YAML.load('./openapi.yaml')
 
 //Configurando o cors
 const corsOptions = {
-    origin: ['*'],
+    origin: '*',
     methods: 'GET, POST, PUT, DELETE, OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization']
 }
@@ -36,13 +36,15 @@ app.use(
 
 //Importando as rotas
 const routerMenu                    = require('./routes/menu.routes.js')
+const routerSetor                   = require('./routes/setor.routes.js')
 
 //Importando os endpoints 
 app.use('/v1/senai/avalon/menu', routerMenu)
+app.use('/v1/senai/avalon/setor', routerSetor)
 
 //Serve para inicializar a API e receber requisições
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080
 
 app.listen(PORT, function(){
-    console.log('API Funcionando na porta ' + PORT);
+    console.log('API Funcionando na porta ' + PORT)
 })
