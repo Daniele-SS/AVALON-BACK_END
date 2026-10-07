@@ -191,15 +191,15 @@ const validarDados = async function(menu){
         message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400
         
-    }else if(menu.icone == undefined || menu.icone == '' || menu.icone == null ){
+    }else if(menu.icone == undefined || menu.icone == '' || menu.icone == null || menu.icone.length > 150 ){
         message.ERROR_BAD_REQUEST.field = '[ICONE] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
-    }else if(menu.rota == undefined || menu.rota == '' || menu.rota == null || menu.rota.length > 100){
+    }else if(menu.rota == undefined || menu.rota == '' || menu.rota == null || menu.rota.length > 255){
         message.ERROR_BAD_REQUEST.field = '[ROTA] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
-    }else if(menu.ordem == undefined || menu.ordem == '' || menu.ordem == null || menu.ordem.length > 3){
+    }else if(menu.ordem == undefined || menu.ordem == '' || menu.ordem == null){
         message.ERROR_BAD_REQUEST.field = '[ORDEM] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
     }else{

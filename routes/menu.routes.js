@@ -3,7 +3,7 @@ const express           = require('express')
 const router            = express.Router()
 
 //Importando arquivo menu da controller
-const controllerNacionalidade = require('../controller/menu/controller_menu.js')
+const controllerMenu = require('../controller/menu/controller_menu.js')
 
 // Endpoint para inserir menu
 router.post('/', async function(request, response){
@@ -12,7 +12,7 @@ router.post('/', async function(request, response){
 
     const contentType = request.headers['content-type']
 
-    const result = await controllerNacionalidade.inserirNovoMenu(
+    const result = await controllerMenu.inserirNovoMenu(
         dados,
         contentType
     )
@@ -23,7 +23,7 @@ router.post('/', async function(request, response){
 // Endpoint para listar menu
 router.get('/', async function(request, response){
 
-    const result = await controllerNacionalidade.listarMenu()
+    const result = await controllerMenu.listarMenu()
 
     return response.status(result.status_code).json(result)
 })
@@ -33,7 +33,7 @@ router.get('/:id', async function(request, response){
 
     const id = request.params.id
 
-    const result = await controllerNacionalidade.buscarMenu(id)
+    const result = await controllerMenu.buscarMenu(id)
 
     return response.status(result.status_code).json(result)
 })
@@ -47,7 +47,7 @@ router.put('/:id', async function(request, response){
 
     const contentType = request.headers['content-type']
 
-    const result = await controllerNacionalidade.atualizarMenu(
+    const result = await controllerMenu.atualizarMenu(
         dados,
         id,
         contentType
@@ -61,7 +61,7 @@ router.delete('/:id', async function(request, response){
 
     const id = request.params.id
 
-    const result = await controllerNacionalidade.excluirByIdMenu(id)
+    const result = await controllerMenu.excluirMenu(id)
 
     return response.status(result.status_code).json(result)
 })

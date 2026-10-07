@@ -1,6 +1,10 @@
 {
   "dependencies": {
     "cors": "^2.8.6",
-    "knex": "^3.3.0"
+    "express": "^5.2.1",
+    "knex": "^3.3.0",
+    "mysql2": "^3.24.5",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   }
 }
