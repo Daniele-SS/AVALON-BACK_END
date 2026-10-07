@@ -1,6 +1,7 @@
 /********************************************************************************
- * Objetivo: Arquivo responsável pelo CRUD no Banco de daods MySQL na tabela de menu
- * Data: 06/10/2026
+ * Objetivo: Arquivo responsável pelo CRUD no Banco de daods MySQL na tabela de 
+ *           jornada_escala
+ * Data: 07/10/2026
  * Autor: Matheus Aguiar
  * Versão: 1.0
  ********************************************************************************/
@@ -17,19 +18,21 @@ const config_message = require('../../../controller/modulo/configMessages.js')
 //Criar a conexão com o BD Mysql
 const knexConex = knex(knexConfig.development)
 
-const insertMenu = async function(menu){
+const insertJornadaEscala = async function(jornadaEscala){
     try {
-    let sql = `insert into tbl_menu (
+    let sql = `insert into tbl_jornada_escala (
                         nome, 
-                        icone,
-                        rota, 
-                        ordem
+                        descricao,
+                        hora_inicio, 
+                        hora_fim,
+                        status
                         )
                 values(
-                        '${menu.nome}',
-                        '${menu.icone}',
-                        '${menu.rota}',
-                        '${menu.ordem}'
+                        '${jornadaEscala.nome}',
+                        '${jornadaEscala.descricao}',
+                        '${jornadaEscala.hora_inicio}',
+                        '${jornadaEscala.hora_fim}',
+                        '${jornadaEscala.status}'
                         );`
 
     //Executar o scriptSQL no banco de dados
@@ -38,30 +41,22 @@ const insertMenu = async function(menu){
     if(result) return result[0].insertId //Retorna o ID gerado no banco de dados
     else return false
     
-    }catch (error) {
-            if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
-                let mensagemErro = JSON.parse(JSON.stringify(config_message));
-                mensagemErro.ERROR_CONFLICT = {
-                    status: 409,
-                    field: '[NOME] JÁ CADASTRADO',
-                    message: "Já existe um nome cadastrado repetido."
-                }
-                return mensagemErro.ERROR_CONFLICT;
-            }
-        return message.ERROR_INTERNAL_SERVER_DB;
+    }catch(error){
+        return false
     }
 }
 
 //Função para atualizar um filme existente na tabela
-const updateMenu = async function(menu){
+const updateJornadaEscala = async function(jornadaEscala){
         try {
             // Script para atualizar os dados do BD
-            let sql = `update tbl_menu set
-                            nome                    = '${menu.nome}',
-                            icone                   = '${menu.icone}',
-                            rota                    = '${menu.rota}',
-                            ordem                   = '${menu.ordem}'
-                            where id                =  ${menu.id}`
+            let sql = `update tbl_jornada_escala set
+                            nome                    = '${jornadaEscala.nome}',
+                            descricao               = '${jornadaEscala.descricao}',
+                            hora_inicio             = '${jornadaEscala.hora_inicio}',
+                            hora_fim                = '${jornadaEscala.hora_fim}',
+                            status                  = '${jornadaEscala.status}'
+                            where id                =  ${jornadaEscala.id}`
               
             // Executa o script SQL no BD
             let result = await knexConex.raw(sql)
@@ -75,9 +70,9 @@ const updateMenu = async function(menu){
         }
 }
 
-const selectAllMenu = async function(){
+const selectAllJornadaEscala = async function(){
     try {
-        let sql = 'select * from tbl_menu order by id desc'
+        let sql = 'select * from tbl_jornada_escala order by id desc'
 
         let result = await knexConex.raw(sql)
 
@@ -92,9 +87,9 @@ const selectAllMenu = async function(){
     }
 }
 
-const selectByIdMenu = async function(id){
+const selectByIdJornadaEscala = async function(id){
     try {
-        let sql = `select * from tbl_menu where id=${id}`
+        let sql = `select * from tbl_jornada_escala where id=${id}`
         let result = await knexConex.raw(sql)
         if(Array.isArray(result)){
             return result[0]
@@ -105,9 +100,9 @@ const selectByIdMenu = async function(id){
     }
 }
 
-const deleteMenu = async function(id){
+const deleteJornadaEscala = async function(id){
     try{
-        let sql = `delete from tbl_menu
+        let sql = `delete from tbl_jornada_escala
                      where id=${id}`
 
     let result = await knexConex.raw(sql)
@@ -123,9 +118,9 @@ const deleteMenu = async function(id){
 }
 
 module.exports = {
-    insertMenu,
-    updateMenu,
-    selectAllMenu,
-    selectByIdMenu,
-    deleteMenu
+    insertJornadaEscala,
+    updateJornadaEscala,
+    selectAllJornadaEscala,
+    selectByIdJornadaEscala,
+    deleteJornadaEscala
 }

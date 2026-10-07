@@ -1,6 +1,6 @@
 /****************************************************************
  * Objetivo: Arquivo responsável pela validação, tratamento e
- *          Manipulação de dados para o CRUD de setor
+ *          Manipulação de dados para o CRUD de jornada_escala
  * Data: 07/10/2026
  * Autor: Matheus Aguiar
  * Versão: 1.0
@@ -10,10 +10,10 @@
 const config_message = require('../modulo/configMessages.js') 
 
 //Import do arquivo DAO para fazer o CRUD do filme no banco de dados
-const setorDAO = require('../../model/DAO/setor/setor.js')
+const jornadaEscalaDAO = require('../../model/DAO/menu/menu.js')
 
 //Função para inserir um novo filme
-const inserirNovoSetor = async function(setor, contentType){
+const inserirNovoMenu = async function(menu, contentType){
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
@@ -22,21 +22,21 @@ const inserirNovoSetor = async function(setor, contentType){
     //Validação para o tipo de dados da requisição (somente JSON)
     if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-    let validar = await validarDados(setor)
+    let validar = await validarDados(menu)
 
     if(validar){
         return validar // 400
     }
     else{
 
-        let result = await setorDAO.insertSetor(setor)
+        let result = await menuDAO.insertMenu(menu)
 
         if(result){ // 201            
-            setor.id = result
+            menu.id = result
             message.DEFAULT_MESSAGE.status      = message.SUCCESS_CREATED_ITEM.status
             message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
             message.DEFAULT_MESSAGE.message     = message.SUCCESS_CREATED_ITEM.message
-            message.DEFAULT_MESSAGE.response    = setor
+            message.DEFAULT_MESSAGE.response    = menu
         }else{ // 500
             return message.ERROR_INTERNAL_SERVER_MODEL // 500
         }
@@ -47,13 +47,12 @@ const inserirNovoSetor = async function(setor, contentType){
         return message.ERROR_CONTENT_TYPE // 415    
     }
     }catch (error){
-        console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500 (controller)
     }
 }
 
 //Função para atualizar um filme
-const atualizarSetor = async function(setor, id, contentType){
+const atualizarMenu = async function(menu, id, contentType){
     let message = JSON.parse(JSON.stringify(config_message))
 
     try{
@@ -61,24 +60,24 @@ const atualizarSetor = async function(setor, id, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
             //Validação para o id incorreto
-            let resultBuscarID = await buscarSetor(id)
+            let resultBuscarID = await buscarMenu(id)
 
             //o retorno da função poderá ser um 400 ou 404 ou até mesmo um 500
             if(resultBuscarID.status){
-                let validar = await validarDados(setor, contentType)
+                let validar = await validarDados(menu, contentType)
 
                 //Validação de campos obrigatórios para atualização (Body)
                 if(!validar){
 
-                    setor.id = id
+                    menu.id = id
 
-                    let result = await setorDAO.updateSetor(setor)
+                    let result = await menuDAO.updateMenu(menu)
 
                     if(result){
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_UPDATED_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCESS_UPDATED_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCESS_UPDATED_ITEM.message
-                        message.DEFAULT_MESSAGE.response    = setor
+                        message.DEFAULT_MESSAGE.response    = menu
                         return message.DEFAULT_MESSAGE //200 (Atualizado)
                     }else{
                         return message.ERROR_INTERNAL_SERVER_MODEL //500
@@ -100,14 +99,14 @@ const atualizarSetor = async function(setor, id, contentType){
     
 }
 
-const listarSetor = async function(){
+const listarMenu = async function(){
 
     //Criando clone do objeto JSON para manipular a estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
 
     try {
 
-        let result = await setorDAO.selectAllSetor()
+        let result = await menuDAO.selectAllMenu()
 
         //Validação para verificar se DAO conseguiu processar os dados
         if(result){
@@ -129,7 +128,7 @@ const listarSetor = async function(){
     }
 }
 
-const buscarSetor = async function(id){
+const buscarMenu = async function(id){
      //Criando clone do objeto JSON para manipular a estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
 
@@ -139,7 +138,7 @@ const buscarSetor = async function(id){
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERROR_BAD_REQUEST // 400
         }else{
-            let result = await setorDAO.selectByIdSetor(id)
+            let result = await menuDAO.selectByIdMenu(id)
 
             if(result){
                 if(result.length > 0){
@@ -159,16 +158,16 @@ const buscarSetor = async function(id){
         }
 }
 
-const excluirSetor = async function(id){
+const excluirMenu = async function(id){
     let message = JSON.parse(JSON.stringify(config_message))
 
     try{
         //Validação do erro 400 e do 404
-        let resultBuscarID = await buscarSetor(id)
+        let resultBuscarID = await buscarMenu(id)
 
         if(resultBuscarID.status){
 
-            let result = await setorDAO.deleteSetor(id)
+            let result = await menuDAO.deleteMenu(id)
 
             if(result){
                 return  message.SUCESS_DELETED_ITEM //200 (Registro excluido)
@@ -184,36 +183,34 @@ const excluirSetor = async function(id){
     }
 }
 
-const validarDados = async function(setor){
+const validarDados = async function(menu){
      //Criando clone do objeto JSON para manipular a estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
 
-    if(setor.nome == undefined || setor.nome == '' || setor.nome == null || setor.nome.length > 150){
+    if(menu.nome == undefined || menu.nome == '' || menu.nome == null || menu.nome.length > 50){
         message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400
         
-    }else if(setor.codigo == undefined || setor.codigo == '' || setor.codigo == null || setor.codigo.length > 10 ){
-        message.ERROR_BAD_REQUEST.field = '[CODIGO] INVÁLIDO'
-        return message.ERROR_BAD_REQUEST
-        
-    }else if(setor.descricao == undefined || setor.descricao == '' || setor.descricao == null || setor.descricao.length > 255){
-        message.ERROR_BAD_REQUEST.field = '[DESCRICAO] INVÁLIDO'
+    }else if(menu.icone == undefined || menu.icone == '' || menu.icone == null || menu.icone.length > 150 ){
+        message.ERROR_BAD_REQUEST.field = '[ICONE] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
-        //Validando o boolean sendo 0 ou 1, ou '0' ou '1' (string)
-    }else if(setor.status === undefined || setor.status === null || setor.status === '' || (setor.status !== 0 && setor.status !== 1 && setor.status !== '0' && setor.status !== '1')){
-        message.ERROR_BAD_REQUEST.field = '[STATUS] INVÁLIDO'
+    }else if(menu.rota == undefined || menu.rota == '' || menu.rota == null || menu.rota.length > 255){
+        message.ERROR_BAD_REQUEST.field = '[ROTA] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
+    }else if(menu.ordem == undefined || menu.ordem == '' || menu.ordem == null){
+        message.ERROR_BAD_REQUEST.field = '[ORDEM] INVÁLIDO'
+        return message.ERROR_BAD_REQUEST
     }else{
         return false
     }
 }
 
 module.exports = {
-    inserirNovoSetor,
-    listarSetor,
-    buscarSetor,
-    excluirSetor,
-    atualizarSetor
+    inserirNovoMenu,
+    listarMenu,
+    buscarMenu,
+    excluirMenu,
+    atualizarMenu
 }

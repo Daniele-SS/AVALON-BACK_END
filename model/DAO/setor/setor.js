@@ -11,33 +11,39 @@ const knex = require('knex')
 //Import do arquivo de configuração para conexão com o BD Mysql
 const knexConfig = require('../../database_config_knex/knex_file.js')
 
+//Import do arquivo de padronização de mensagens
+const config_message = require('../../../controller/modulo/configMessages.js') 
+
 //Criar a conexão com o BD Mysql
 const knexConex = knex(knexConfig.development)
 
 const insertSetor = async function(setor){
     try {
-    let sql = `insert into tbl_setor (
-                        codigo, 
-                        nome,
-                        descricao,
-                        status
-                        )
-                values(
-                        '${setor.codigo}',
-                        '${setor.nome}',
-                        '${setor.descricao}'
-                        '${setor.status}'
-                        );`
+        // O Knex faz o insert de forma limpa e segura, sem risco de SQL Injection
+        let [novoId] = await knexConex('tbl_setor').insert({
+            codigo: setor.codigo,
+            nome: setor.nome,
+            descricao: setor.descricao,
+            status: setor.status
+        });
 
-    //Executar o scriptSQL no banco de dados
-    let result = await knexConex.raw(sql)
-
-    if(result) return result[0].insertId //Retorna o ID gerado no banco de dados
-    else return false
-    
-    }catch(error){
-         console.log(error)
-        return false
+        if(novoId) {
+            return novoId; // Retorna o ID gerado no banco de dados
+        } else {
+            return false;
+        }
+        
+    } catch (error) {
+        if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
+            let mensagemErro = JSON.parse(JSON.stringify(config_message));
+            mensagemErro.ERROR_CONFLICT = {
+                status: 409,
+                field: '[CODIGO] JÁ CADASTRADO',
+                message: "Já existe um código cadastrado repetido."
+            }
+            return mensagemErro.ERROR_CONFLICT;
+        }
+        return message.ERROR_INTERNAL_SERVER_DB;
     }
 }
 
@@ -49,7 +55,7 @@ const updateSetor = async function(setor){
                             codigo                 = '${setor.codigo}',
                             nome                   = '${setor.nome}',
                             descricao              = '${setor.descricao}',
-                            status                 = '${setor.status}',
+                            status                 = '${setor.status}'
                             where id               =  ${setor.id}`
               
             // Executa o script SQL no BD
@@ -60,6 +66,7 @@ const updateSetor = async function(setor){
             else
                 return false
         } catch (error) {
+            console.log(error)
             return false
         }
 }

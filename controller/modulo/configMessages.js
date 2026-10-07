@@ -23,7 +23,7 @@ const ERROR_INTERNAL_SERVER_MODEL       = {status: false, status_code: 500, mess
 const ERROR_INTERNAL_SERVER_CONTROLLER  = {status: false, status_code: 500, message: 'Não foi possivel processar a requisição por conta de erro na API [ERRO NA CONTROLLER].'}
 const ERROR_CONTENT_TYPE                = {status: false, status_code: 415, message: 'Não foi possivel processar a requisição, pois o formato de dados aceito pela API é somente JSON.'}
 const ERROR_NOT_FOUND                   = {status: false, status_code: 404, message: 'Não foi encontrado nenhum dado para retorno'}
-
+const ERROR_CONFLICT                    = {status: false, status_code: 409, message: "O código informado já está cadastrado no sistema. Por favor, utilize outro."} // retorno para conflito de dados (409)
 
 //Mensagens de sucesso da API
 const SUCCESS_CREATED_ITEM      = {status: true, status_code: 201, message: 'Registro inserido com sucesso!'} // Mensagem de sucesso da API
@@ -47,5 +47,6 @@ module.exports = {
     SUCESS_RESPONSE,
     SUCESS_UPDATED_ITEM,
     SUCESS_DELETED_ITEM,
-    SUCCESS_CREATED_WARNING
+    SUCCESS_CREATED_WARNING,
+    ERROR_CONFLICT
 }

@@ -1,6 +1,6 @@
 /********************************************************************************
- * Objetivo: Arquivo responsável pelo CRUD no Banco de daods MySQL na tabela de menu
- * Data: 06/10/2026
+ * Objetivo: Arquivo responsável pelo CRUD no Banco de daods MySQL na tabela de cargo
+ * Data: 07/10/2026
  * Autor: Matheus Aguiar
  * Versão: 1.0
  ********************************************************************************/
@@ -17,19 +17,19 @@ const config_message = require('../../../controller/modulo/configMessages.js')
 //Criar a conexão com o BD Mysql
 const knexConex = knex(knexConfig.development)
 
-const insertMenu = async function(menu){
+const insertCargo = async function(cargo){
     try {
-    let sql = `insert into tbl_menu (
-                        nome, 
-                        icone,
-                        rota, 
-                        ordem
+    let sql = `insert into tbl_cargo (
+                        codigo, 
+                        nome,
+                        descricao,
+                        status
                         )
                 values(
-                        '${menu.nome}',
-                        '${menu.icone}',
-                        '${menu.rota}',
-                        '${menu.ordem}'
+                        '${cargo.codigo}',
+                        '${cargo.nome}',
+                        '${cargo.descricao}',
+                        '${cargo.status}'
                         );`
 
     //Executar o scriptSQL no banco de dados
@@ -39,29 +39,29 @@ const insertMenu = async function(menu){
     else return false
     
     }catch (error) {
-            if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
-                let mensagemErro = JSON.parse(JSON.stringify(config_message));
-                mensagemErro.ERROR_CONFLICT = {
-                    status: 409,
-                    field: '[NOME] JÁ CADASTRADO',
-                    message: "Já existe um nome cadastrado repetido."
+                if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
+                    let mensagemErro = JSON.parse(JSON.stringify(config_message));
+                    mensagemErro.ERROR_CONFLICT = {
+                        status: 409,
+                        field: '[CODIGO] JÁ CADASTRADO',
+                        message: "Já existe um código cadastrado repetido."
+                    }
+                    return mensagemErro.ERROR_CONFLICT;
                 }
-                return mensagemErro.ERROR_CONFLICT;
-            }
-        return message.ERROR_INTERNAL_SERVER_DB;
-    }
+            return message.ERROR_INTERNAL_SERVER_DB;
+        }
 }
 
 //Função para atualizar um filme existente na tabela
-const updateMenu = async function(menu){
+const updateCargo = async function(cargo){
         try {
             // Script para atualizar os dados do BD
-            let sql = `update tbl_menu set
-                            nome                    = '${menu.nome}',
-                            icone                   = '${menu.icone}',
-                            rota                    = '${menu.rota}',
-                            ordem                   = '${menu.ordem}'
-                            where id                =  ${menu.id}`
+            let sql = `update tbl_cargo set
+                            codigo                 = '${cargo.codigo}',
+                            nome                   = '${cargo.nome}',
+                            descricao              = '${cargo.descricao}',
+                            status                 = '${cargo.status}'
+                            where id               =  ${cargo.id}`
               
             // Executa o script SQL no BD
             let result = await knexConex.raw(sql)
@@ -71,13 +71,14 @@ const updateMenu = async function(menu){
             else
                 return false
         } catch (error) {
+            console.log(error)
             return false
         }
 }
 
-const selectAllMenu = async function(){
+const selectAllCargo = async function(){
     try {
-        let sql = 'select * from tbl_menu order by id desc'
+        let sql = 'select * from tbl_cargo order by id desc'
 
         let result = await knexConex.raw(sql)
 
@@ -92,9 +93,9 @@ const selectAllMenu = async function(){
     }
 }
 
-const selectByIdMenu = async function(id){
+const selectByIdCargo = async function(id){
     try {
-        let sql = `select * from tbl_menu where id=${id}`
+        let sql = `select * from tbl_cargo where id=${id}`
         let result = await knexConex.raw(sql)
         if(Array.isArray(result)){
             return result[0]
@@ -105,9 +106,9 @@ const selectByIdMenu = async function(id){
     }
 }
 
-const deleteMenu = async function(id){
+const deleteCargo = async function(id){
     try{
-        let sql = `delete from tbl_menu
+        let sql = `delete from tbl_cargo
                      where id=${id}`
 
     let result = await knexConex.raw(sql)
@@ -123,9 +124,9 @@ const deleteMenu = async function(id){
 }
 
 module.exports = {
-    insertMenu,
-    updateMenu,
-    selectAllMenu,
-    selectByIdMenu,
-    deleteMenu
+    insertCargo,
+    updateCargo,
+    selectAllCargo,
+    selectByIdCargo,
+    deleteCargo
 }
