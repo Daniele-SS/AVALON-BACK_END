@@ -38,11 +38,15 @@ app.use(
 const routerMenu                    = require('./routes/menu.routes.js')
 const routerSetor                   = require('./routes/setor.routes.js')
 const routerCargo                   = require('./routes/cargo.routes.js')
+const routerjornadaEscala           = require('./routes/jornada_escala.routes.js')
+const routerNivelAcesso             = require('./routes/nivel_acesso.routes.js')
 
 //Importando os endpoints 
 app.use('/v1/senai/avalon/menu', routerMenu)
 app.use('/v1/senai/avalon/setor', routerSetor)
 app.use('/v1/senai/avalon/cargo', routerCargo)
+app.use('/v1/senai/avalon/jornada_escala', routerjornadaEscala)
+app.use('/v1/senai/avalon/nivel_acesso', routerNivelAcesso)
 
 //Serve para inicializar a API e receber requisições
 const PORT = process.env.PORT || 8080

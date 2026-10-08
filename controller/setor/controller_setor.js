@@ -9,10 +9,10 @@
 //Import do arquivo de padronização de mensagens
 const config_message = require('../modulo/configMessages.js') 
 
-//Import do arquivo DAO para fazer o CRUD do filme no banco de dados
+//Import do arquivo DAO para fazer o CRUD do setor no banco de dados
 const setorDAO = require('../../model/DAO/setor/setor.js')
 
-//Função para inserir um novo filme
+//Função para inserir um novo setor
 const inserirNovoSetor = async function(setor, contentType){
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a estrutura original
@@ -52,7 +52,7 @@ const inserirNovoSetor = async function(setor, contentType){
     }
 }
 
-//Função para atualizar um filme
+//Função para atualizar um setor
 const atualizarSetor = async function(setor, id, contentType){
     let message = JSON.parse(JSON.stringify(config_message))
 

@@ -9,10 +9,10 @@
 //Import do arquivo de padronização de mensagens
 const config_message = require('../modulo/configMessages.js') 
 
-//Import do arquivo DAO para fazer o CRUD do filme no banco de dados
+//Import do arquivo DAO para fazer o CRUD do jornada_escala no banco de dados
 const jornadaEscalaDAO = require('../../model/DAO/jornada_escala/jornada_escala.js')
 
-//Função para inserir um novo filme
+//Função para inserir um novo jornada_escala
 const inserirNovoJornadaEscala = async function(jornadaEscala, contentType){
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a estrutura original
@@ -51,7 +51,7 @@ const inserirNovoJornadaEscala = async function(jornadaEscala, contentType){
     }
 }
 
-//Função para atualizar um filme
+//Função para atualizar um jornada_escala
 const atualizarJornadaEscala = async function(jornadaEscala, id, contentType){
     let message = JSON.parse(JSON.stringify(config_message))
 
@@ -71,7 +71,7 @@ const atualizarJornadaEscala = async function(jornadaEscala, id, contentType){
 
                     jornadaEscala.id = id
 
-                    let result = await jornadaEscalaDAO.updateMenu(jornadaEscala)
+                    let result = await jornadaEscalaDAO.updateJornadaEscala(jornadaEscala)
 
                     if(result){
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_UPDATED_ITEM.status
@@ -158,7 +158,7 @@ const buscarJornadaEscala = async function(id){
         }
 }
 
-const excluirjornadaEscala = async function(id){
+const excluirJornadaEscala = async function(id){
     let message = JSON.parse(JSON.stringify(config_message))
 
     try{
@@ -191,20 +191,20 @@ const validarDados = async function(jornadaEscala){
         message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
         return message.ERROR_BAD_REQUEST //400
         
-    }else if(jornadaEscala.descricao == undefined || jornadaEscala.descricao == '' || jornadaEscala.descricao == null || jornadaEscala.descricao.length > 255 ){
-        message.ERROR_BAD_REQUEST.field = '[ICONE] INVÁLIDO'
+    }else if(jornadaEscala.descricao == undefined || jornadaEscala.descricao.length > 255 ){
+        message.ERROR_BAD_REQUEST.field = '[DESCRIÇÃO] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
     }else if(jornadaEscala.hora_inicio == undefined || jornadaEscala.hora_inicio == '' || jornadaEscala.hora_inicio == null ){
-        message.ERROR_BAD_REQUEST.field = '[ROTA] INVÁLIDO'
+        message.ERROR_BAD_REQUEST.field = '[HORA_INICIO] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
     }else if(jornadaEscala.hora_fim == undefined || jornadaEscala.hora_fim == '' || jornadaEscala.hora_fim == null){
-        message.ERROR_BAD_REQUEST.field = '[ORDEM] INVÁLIDO'
+        message.ERROR_BAD_REQUEST.field = '[HORA_FIM] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
         
-    }else if(setor.status === undefined || setor.status === null || setor.status === '' || (setor.status !== 0 && setor.status !== 1 && setor.status !== '0' && setor.status !== '1')){
-        message.ERROR_BAD_REQUEST.field = '[ORDEM] INVÁLIDO'
+    }else if(jornadaEscala.status === undefined || jornadaEscala.status === null || jornadaEscala.status === '' || (jornadaEscala.status !== 0 && jornadaEscala.status !== 1 && jornadaEscala.status !== '0' && jornadaEscala.status !== '1')){
+        message.ERROR_BAD_REQUEST.field = '[STATUS] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
     }else{
@@ -213,9 +213,9 @@ const validarDados = async function(jornadaEscala){
 }
 
 module.exports = {
-    inserirNovoMenu,
-    listarMenu,
-    buscarMenu,
-    excluirMenu,
-    atualizarMenu
+    inserirNovoJornadaEscala,
+    listarJornadaEscala,
+    buscarJornadaEscala,
+    excluirJornadaEscala,
+    atualizarJornadaEscala
 }

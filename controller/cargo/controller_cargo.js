@@ -9,10 +9,10 @@
 //Import do arquivo de padronização de mensagens
 const config_message = require('../modulo/configMessages.js') 
 
-//Import do arquivo DAO para fazer o CRUD do filme no banco de dados
+//Import do arquivo DAO para fazer o CRUD do cargo no banco de dados
 const cargoDAO = require('../../model/DAO/cargo/cargo.js')
 
-//Função para inserir um novo filme
+//Função para inserir um novo cargo
 const inserirNovoCargo = async function(cargo, contentType){
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a estrutura original
@@ -52,7 +52,7 @@ const inserirNovoCargo = async function(cargo, contentType){
     }
 }
 
-//Função para atualizar um filme
+//Função para atualizar um cargo
 const atualizarCargo = async function(cargo, id, contentType){
     let message = JSON.parse(JSON.stringify(config_message))
 

@@ -40,19 +40,19 @@ const insertCargo = async function(cargo){
     
     }catch (error) {
                 if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
-                    let mensagemErro = JSON.parse(JSON.stringify(config_message));
+                    let mensagemErro = JSON.parse(JSON.stringify(config_message))
                     mensagemErro.ERROR_CONFLICT = {
                         status: 409,
                         field: '[CODIGO] JÁ CADASTRADO',
                         message: "Já existe um código cadastrado repetido."
                     }
-                    return mensagemErro.ERROR_CONFLICT;
+                    return mensagemErro.ERROR_CONFLICT
                 }
-            return message.ERROR_INTERNAL_SERVER_DB;
+            return message.ERROR_INTERNAL_SERVER_DB
         }
 }
 
-//Função para atualizar um filme existente na tabela
+//Função para atualizar um cargo existente na tabela
 const updateCargo = async function(cargo){
         try {
             // Script para atualizar os dados do BD
