@@ -40,13 +40,60 @@ const routerSetor                   = require('./routes/setor.routes.js')
 const routerCargo                   = require('./routes/cargo.routes.js')
 const routerjornadaEscala           = require('./routes/jornada_escala.routes.js')
 const routerNivelAcesso             = require('./routes/nivel_acesso.routes.js')
+const routerNivelMenu               = require('./routes/nivel_menu.routes.js')
 
 //Importando os endpoints 
 app.use('/v1/senai/avalon/menu', routerMenu)
+/*Inserir ao criar um menu
+{
+	"nome": "Analítico de Ponto",
+    "icone": "fa-solid fa-house",
+    "rota": "/adp",
+    "ordem": "38"
+}
+*/
 app.use('/v1/senai/avalon/setor', routerSetor)
+/*Inserir ao criar um setor
+{
+    "codigo": "SET007",
+    "nome": "Operações",
+    "descricao": "Registro utilizado para testar um setor ativo.",
+    "status": 1
+}
+*/
 app.use('/v1/senai/avalon/cargo', routerCargo)
+/*Inserir ao criar um cargo
+{
+    "codigo": "CAR006",
+    "nome": "Administrador de empresa",
+    "descricao": "Registro utilizado para testar um cargo inativo.",
+    "status": "0"
+}
+*/
 app.use('/v1/senai/avalon/jornada_escala', routerjornadaEscala)
+/*Inserir ao criar um jornada de escala
+{
+    "nome": "Jornada nativa",
+    "descricao": "Registro utilizado para testar uma jornada de escala.",
+    "hora_inicio": "08:00:00",
+    "hora_fim": "17:00:00",
+    "status": 1
+}
+*/
 app.use('/v1/senai/avalon/nivel_acesso', routerNivelAcesso)
+/*Inserir ao criar um nível de acesso
+{
+    "nome": "RH2",
+    "status": 1
+}
+*/
+app.use('/v1/senai/avalon/nivel_menu', routerNivelMenu)
+/*Inserir ao criar um nível de menu
+{
+    "id_nivel_acesso": 1,
+    "id_menu": 2
+}
+*/
 
 //Serve para inicializar a API e receber requisições
 const PORT = process.env.PORT || 8080
