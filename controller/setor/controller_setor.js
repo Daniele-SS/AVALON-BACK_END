@@ -116,7 +116,7 @@ const listarSetor = async function(){
                 message.DEFAULT_MESSAGE.status         = message.SUCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code    = message.SUCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.response.count = result.length
-                message.DEFAULT_MESSAGE.response.classificacao = result
+                message.DEFAULT_MESSAGE.response.setor = result
 
                 return message.DEFAULT_MESSAGE //200 
 
@@ -145,7 +145,7 @@ const buscarSetor = async function(id){
                 if(result.length > 0){
                     message.DEFAULT_MESSAGE.status          = message.SUCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code     = message.SUCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.classificacao  = result
+                    message.DEFAULT_MESSAGE.response.setor  = result
 
                     return message.DEFAULT_MESSAGE //200
                 }else{

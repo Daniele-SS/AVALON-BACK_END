@@ -1445,7 +1445,7 @@ paths:
                 id_requisicao: 3f1c9d52-0b7a-4f0e-9a52-6a1d1b7d9e10
         '500':
           $ref: '#/components/responses/ServerError'
-  /v1/senai/avalon/jornada:
+  /v1/senai/avalon/jornada_escala:
     get:
       tags:
       - JORNADA E ESCALA
@@ -1552,7 +1552,7 @@ paths:
           $ref: '#/components/responses/UnsupportedMedia'
         '500':
           $ref: '#/components/responses/ServerError'
-  /v1/senai/avalon/jornada/{id}:
+  /v1/senai/avalon/jornada_escala/{id}:
     get:
       tags:
       - JORNADA E ESCALA
@@ -1680,7 +1680,7 @@ paths:
                 id_requisicao: 3f1c9d52-0b7a-4f0e-9a52-6a1d1b7d9e10
         '500':
           $ref: '#/components/responses/ServerError'
-  /v1/senai/avalon/jornada/{id}/dias:
+  /v1/senai/avalon/jornada_escala/{id}/dias:
     get:
       tags:
       - JORNADA E ESCALA
@@ -1780,7 +1780,7 @@ paths:
           $ref: '#/components/responses/Unprocessable'
         '500':
           $ref: '#/components/responses/ServerError'
-  /v1/senai/avalon/jornada/{id}/dias/{id_dia}:
+  /v1/senai/avalon/jornada_escala/{id}/dias/{id_dia}:
     put:
       tags:
       - JORNADA E ESCALA
@@ -7043,7 +7043,7 @@ paths:
                 id_requisicao: 3f1c9d52-0b7a-4f0e-9a52-6a1d1b7d9e10
         '500':
           $ref: '#/components/responses/ServerError'
-  /v1/senai/avalon/nivel-acesso:
+  /v1/senai/avalon/nivel_acesso:
     get:
       tags:
       - USUÁRIO E ACESSO
@@ -7080,7 +7080,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
-  /v1/senai/avalon/nivel-acesso/{id}/menu:
+  /v1/senai/avalon/nivel_acesso/{id}/menu:
     get:
       tags:
       - USUÁRIO E ACESSO

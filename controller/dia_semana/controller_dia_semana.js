@@ -1,7 +1,7 @@
 /****************************************************************
  * Objetivo: Arquivo responsável pela validação, tratamento e
- *          Manipulação de dados para o CRUD de jornada_escala
- * Data: 07/10/2026
+ *          Manipulação de dados para o CRUD de dia_semana
+ * Data: 09/10/2026
  * Autor: Matheus Aguiar
  * Versão: 1.0
 ****************************************************************/
@@ -9,11 +9,12 @@
 //Import do arquivo de padronização de mensagens
 const config_message = require('../modulo/configMessages.js') 
 
-//Import do arquivo DAO para fazer o CRUD do jornada_escala no banco de dados
-const jornadaEscalaDAO = require('../../model/DAO/jornada_escala/jornada_escala.js')
+//Import do arquivo DAO para fazer o CRUD do dia_semana no banco de dados
+const diaSemanaDAO = require('../../model/DAO/dia_semana/dia_semana.js')
+const controllerJornadaEscala = require('../jornada_escala/controller_jornada_escala.js')
 
-//Função para inserir um novo jornada_escala
-const inserirNovoJornadaEscala = async function(jornadaEscala, contentType){
+//Função para inserir um novo dia_semana
+const inserirNovoDiaSemana = async function(diaSemana, contentType){
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
@@ -22,21 +23,21 @@ const inserirNovoJornadaEscala = async function(jornadaEscala, contentType){
     //Validação para o tipo de dados da requisição (somente JSON)
     if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
-    let validar = await validarDados(jornadaEscala)
+    let validar = await validarDados(diaSemana)
 
     if(validar){
         return validar // 400
     }
     else{
 
-        let result = await jornadaEscalaDAO.insertJornadaEscala(jornadaEscala)
+        let result = await diaSemanaDAO.insertDiaSemana(diaSemana)
 
         if(result){ // 201            
-            jornadaEscala.id = result
+            diaSemana.id = result
             message.DEFAULT_MESSAGE.status      = message.SUCCESS_CREATED_ITEM.status
             message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
             message.DEFAULT_MESSAGE.message     = message.SUCCESS_CREATED_ITEM.message
-            message.DEFAULT_MESSAGE.response    = jornadaEscala
+            message.DEFAULT_MESSAGE.response    = diaSemana
         }else{ // 500
             return message.ERROR_INTERNAL_SERVER_MODEL // 500
         }
@@ -51,8 +52,8 @@ const inserirNovoJornadaEscala = async function(jornadaEscala, contentType){
     }
 }
 
-//Função para atualizar um jornada_escala
-const atualizarJornadaEscala = async function(jornadaEscala, id, contentType){
+//Função para atualizar um dia_semana
+const atualizarDiaSemana = async function(diaSemana, id, contentType){
     let message = JSON.parse(JSON.stringify(config_message))
 
     try{
@@ -60,24 +61,24 @@ const atualizarJornadaEscala = async function(jornadaEscala, id, contentType){
         if(String(contentType).toUpperCase() == 'APPLICATION/JSON'){
 
             //Validação para o id incorreto
-            let resultBuscarID = await buscarJornadaEscala(id)
+            let resultBuscarID = await buscarDiaSemana(id)
 
             //o retorno da função poderá ser um 400 ou 404 ou até mesmo um 500
             if(resultBuscarID.status){
-                let validar = await validarDados(jornadaEscala, contentType)
+                let validar = await validarDados(diaSemana, contentType)
 
                 //Validação de campos obrigatórios para atualização (Body)
                 if(!validar){
 
-                    jornadaEscala.id = id
+                    diaSemana.id = id
 
-                    let result = await jornadaEscalaDAO.updateJornadaEscala(jornadaEscala)
+                    let result = await diaSemanaDAO.updateDiaSemana(diaSemana)
 
                     if(result){
                         message.DEFAULT_MESSAGE.status      = message.SUCESS_UPDATED_ITEM.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCESS_UPDATED_ITEM.status_code
                         message.DEFAULT_MESSAGE.message     = message.SUCESS_UPDATED_ITEM.message
-                        message.DEFAULT_MESSAGE.response    = jornadaEscala
+                        message.DEFAULT_MESSAGE.response    = diaSemana
                         return message.DEFAULT_MESSAGE //200 (Atualizado)
                     }else{
                         return message.ERROR_INTERNAL_SERVER_MODEL //500
@@ -99,23 +100,33 @@ const atualizarJornadaEscala = async function(jornadaEscala, id, contentType){
     
 }
 
-const listarJornadaEscala = async function(){
+const listarDiaSemana = async function(){
 
     //Criando clone do objeto JSON para manipular a estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
 
     try {
-
-        let result = await jornadaEscalaDAO.selectAllJornadaEscala()
+        let result = await diaSemanaDAO.selectAllDiaSemana()
 
         //Validação para verificar se DAO conseguiu processar os dados
         if(result){
             //Validação para verificar se existe conteúdo no array
             if(result.length > 0 ){
+
+                for(let item of result){
+                                    
+                    // Busca a jornada escala pelo ID
+                    let resultJornada = await controllerJornadaEscala.buscarJornadaEscala(item.id_jornada_escala)
+                    if(resultJornada.status){
+                    item.jornada_escala = resultJornada.response.jorandaEscala || resultJornada.response
+                    delete item.id_jornada_escala // Apaga o ID para não duplicar no JSON
+                    }
+                }
+                
                 message.DEFAULT_MESSAGE.status         = message.SUCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code    = message.SUCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.response.count = result.length
-                message.DEFAULT_MESSAGE.response.jornadaEscala = result
+                message.DEFAULT_MESSAGE.response.diaSemana = result
 
                 return message.DEFAULT_MESSAGE //200 
 
@@ -128,7 +139,7 @@ const listarJornadaEscala = async function(){
     }
 }
 
-const buscarJornadaEscala = async function(id){
+const buscarDiaSemana = async function(id){
      //Criando clone do objeto JSON para manipular a estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
 
@@ -138,13 +149,13 @@ const buscarJornadaEscala = async function(id){
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERROR_BAD_REQUEST // 400
         }else{
-            let result = await jornadaEscalaDAO.selectByIdJornadaEscala(id)
+            let result = await diaSemanaDAO.selectByIdDiaSemana(id)
 
             if(result){
                 if(result.length > 0){
                     message.DEFAULT_MESSAGE.status          = message.SUCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code     = message.SUCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.jornadaEscala  = result
+                    message.DEFAULT_MESSAGE.response.diaSemana  = result
 
                     return message.DEFAULT_MESSAGE //200
                 }else{
@@ -158,16 +169,16 @@ const buscarJornadaEscala = async function(id){
         }
 }
 
-const excluirJornadaEscala = async function(id){
+const excluirDiaSemana = async function(id){
     let message = JSON.parse(JSON.stringify(config_message))
 
     try{
         //Validação do erro 400 e do 404
-        let resultBuscarID = await buscarJornadaEscala(id)
+        let resultBuscarID = await buscarDiaSemana(id)
 
         if(resultBuscarID.status){
 
-            let result = await jornadaEscalaDAO.deleteJornadaEscala(id)
+            let result = await diaSemanaDAO.deleteDiaSemana(id)
 
             if(result){
                 return  message.SUCESS_DELETED_ITEM //200 (Registro excluido)
@@ -183,39 +194,34 @@ const excluirJornadaEscala = async function(id){
     }
 }
 
-const validarDados = async function(jornadaEscala){
+const validarDados = async function(diaSemana){
      //Criando clone do objeto JSON para manipular a estrutura local sem modificar a estrutura original
     let message = JSON.parse(JSON.stringify(config_message))
 
-    if(jornadaEscala.nome == undefined || jornadaEscala.nome == '' || jornadaEscala.nome == null || jornadaEscala.nome.length > 100){
-        message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
-        return message.ERROR_BAD_REQUEST //400
-        
-    }else if(jornadaEscala.descricao == undefined || jornadaEscala.descricao.length > 255 ){
-        message.ERROR_BAD_REQUEST.field = '[DESCRIÇÃO] INVÁLIDO'
+    if(diaSemana.id_jornada_escala == undefined || diaSemana.id_jornada_escala == '' || diaSemana.id_jornada_escala == null || isNaN(diaSemana.id_jornada_escala) ){
+        message.ERROR_BAD_REQUEST.field = '[ID_JORNADA_ESCALA] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
-    }else if(jornadaEscala.hora_inicio == undefined || jornadaEscala.hora_inicio == '' || jornadaEscala.hora_inicio == null ){
-        message.ERROR_BAD_REQUEST.field = '[HORA_INICIO] INVÁLIDO'
+    }else if(diaSemana.dia_semana == undefined || diaSemana.dia_semana == '' || diaSemana.dia_semana == null ){
+        message.ERROR_BAD_REQUEST.field = '[DIA_SEMANA] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
 
-    }else if(jornadaEscala.hora_fim == undefined || jornadaEscala.hora_fim == '' || jornadaEscala.hora_fim == null){
-        message.ERROR_BAD_REQUEST.field = '[HORA_FIM] INVÁLIDO'
+    }else if(diaSemana.dia_sigla == undefined || diaSemana.dia_sigla == '' || diaSemana.dia_sigla == null){
+        message.ERROR_BAD_REQUEST.field = '[DIA_SIGLA] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
         
-    }else if(jornadaEscala.status === undefined || jornadaEscala.status === null || jornadaEscala.status === '' || (jornadaEscala.status !== 0 && jornadaEscala.status !== 1 && jornadaEscala.status !== '0' && jornadaEscala.status !== '1')){
-        message.ERROR_BAD_REQUEST.field = '[STATUS] INVÁLIDO'
+    }else if(diaSemana.ativo === undefined || diaSemana.ativo === null || diaSemana.ativo === '' || (diaSemana.ativo !== 0 && diaSemana.ativo !== 1 && diaSemana.ativo !== '0' && diaSemana.ativo !== '1')){
+        message.ERROR_BAD_REQUEST.field = '[ATIVO] INVÁLIDO'
         return message.ERROR_BAD_REQUEST
-
     }else{
         return false
     }
 }
 
 module.exports = {
-    inserirNovoJornadaEscala,
-    listarJornadaEscala,
-    buscarJornadaEscala,
-    excluirJornadaEscala,
-    atualizarJornadaEscala
+    inserirNovoDiaSemana,
+    listarDiaSemana,
+    buscarDiaSemana,
+    excluirDiaSemana,
+    atualizarDiaSemana
 }

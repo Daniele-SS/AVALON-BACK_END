@@ -48,7 +48,7 @@ const insertCargo = async function(cargo){
                     }
                     return mensagemErro.ERROR_CONFLICT
                 }
-            return message.ERROR_INTERNAL_SERVER_DB
+            return message.ERROR_INTERNAL_SERVER_MODEL
         }
 }
 

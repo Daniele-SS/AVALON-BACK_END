@@ -1,6 +1,7 @@
 /********************************************************************************
- * Objetivo: Arquivo responsável pelo CRUD no Banco de daods MySQL na tabela de menu
- * Data: 06/10/2026
+ * Objetivo: Arquivo responsável pelo CRUD no Banco de daods MySQL na tabela de 
+ *           dia_semana
+ * Data: 09/10/2026
  * Autor: Matheus Aguiar
  * Versão: 1.0
  ********************************************************************************/
@@ -11,25 +12,22 @@ const knex = require('knex')
 //Import do arquivo de configuração para conexão com o BD Mysql
 const knexConfig = require('../../database_config_knex/knex_file.js')
 
-//Import do arquivo de padronização de mensagens
-const config_message = require('../../../controller/modulo/configMessages.js') 
-
 //Criar a conexão com o BD Mysql
 const knexConex = knex(knexConfig.development)
 
-const insertMenu = async function(menu){
+const insertDiaSemana = async function(diaSemana){
     try {
-    let sql = `insert into tbl_menu (
-                        nome, 
-                        icone,
-                        rota, 
-                        ordem
+    let sql = `insert into tbl_dia_semana ( 
+                        id_jornada_escala,
+                        dia_semana, 
+                        dia_sigla,
+                        ativo
                         )
                 values(
-                        '${menu.nome}',
-                        '${menu.icone}',
-                        '${menu.rota}',
-                        '${menu.ordem}'
+                        '${diaSemana.id_jornada_escala}',
+                        '${diaSemana.dia_semana}',
+                        '${diaSemana.dia_sigla}',
+                        '${diaSemana.ativo}'
                         );`
 
     //Executar o scriptSQL no banco de dados
@@ -39,29 +37,30 @@ const insertMenu = async function(menu){
     else return false
     
     }catch (error) {
+        console.log(error)
             if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
                 let mensagemErro = JSON.parse(JSON.stringify(config_message))
                 mensagemErro.ERROR_CONFLICT = {
                     status: 409,
-                    field: '[NOME] JÁ CADASTRADO',
-                    message: "Já existe um nome cadastrado repetido."
+                    field: '[ID_JORNADA_ESCALA E ID_DIA_SEMANA] JÁ CADASTRADO',
+                    message: "Já existe esta jornada de escala vinculado a este dia semana."
                 }
                 return mensagemErro.ERROR_CONFLICT
             }
-        return message.ERROR_INTERNAL_SERVER_MODEL
+        return config_message.ERROR_INTERNAL_SERVER_MODEL
     }
 }
 
-//Função para atualizar o menu existente na tabela
-const updateMenu = async function(menu){
+//Função para atualizar o dia da semana existente na tabela
+const updateDiaSemana = async function(diaSemana){
         try {
             // Script para atualizar os dados do BD
-            let sql = `update tbl_menu set
-                            nome                    = '${menu.nome}',
-                            icone                   = '${menu.icone}',
-                            rota                    = '${menu.rota}',
-                            ordem                   = '${menu.ordem}'
-                            where id                =  ${menu.id}`
+            let sql = `update tbl_dia_semana set
+                            id_jornada_escala      = '${diaSemana.id_jornada_escala}',
+                            dia_semana             = '${diaSemana.dia_semana}',
+                            dia_sigla              = '${diaSemana.dia_sigla}',
+                            ativo                  = '${diaSemana.ativo}'
+                            where id               =  ${diaSemana.id}`
               
             // Executa o script SQL no BD
             let result = await knexConex.raw(sql)
@@ -71,13 +70,14 @@ const updateMenu = async function(menu){
             else
                 return false
         } catch (error) {
+            console.log(error)
             return false
         }
 }
 
-const selectAllMenu = async function(){
+const selectAllDiaSemana = async function(){
     try {
-        let sql = 'select * from tbl_menu order by id desc'
+        let sql = 'select * from tbl_dia_semana order by id desc'
 
         let result = await knexConex.raw(sql)
 
@@ -92,9 +92,9 @@ const selectAllMenu = async function(){
     }
 }
 
-const selectByIdMenu = async function(id){
+const selectByIdDiaSemana = async function(id){
     try {
-        let sql = `select * from tbl_menu where id=${id}`
+        let sql = `select * from tbl_dia_semana where id=${id}`
         let result = await knexConex.raw(sql)
         if(Array.isArray(result)){
             return result[0]
@@ -105,9 +105,9 @@ const selectByIdMenu = async function(id){
     }
 }
 
-const deleteMenu = async function(id){
+const deleteDiaSemana = async function(id){
     try{
-        let sql = `delete from tbl_menu
+        let sql = `delete from tbl_dia_semana
                      where id=${id}`
 
     let result = await knexConex.raw(sql)
@@ -123,9 +123,9 @@ const deleteMenu = async function(id){
 }
 
 module.exports = {
-    insertMenu,
-    updateMenu,
-    selectAllMenu,
-    selectByIdMenu,
-    deleteMenu
+    insertDiaSemana,
+    updateDiaSemana,
+    selectAllDiaSemana,
+    selectByIdDiaSemana,
+    deleteDiaSemana
 }

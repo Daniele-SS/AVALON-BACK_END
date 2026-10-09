@@ -37,6 +37,7 @@ const insertNivelMenu = async function(nivelMenu){
         else return false
     
     } catch (error) {
+        console.log(error)
         if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
             let mensagemErro = JSON.parse(JSON.stringify(config_message))
             mensagemErro.ERROR_CONFLICT = {
@@ -46,7 +47,7 @@ const insertNivelMenu = async function(nivelMenu){
             }
             return mensagemErro.ERROR_CONFLICT
         }
-        return config_message.ERROR_INTERNAL_SERVER_DB
+        return config_message.ERROR_INTERNAL_SERVER_MODEL
     }
 }
 

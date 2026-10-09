@@ -41,10 +41,11 @@ const routerCargo                   = require('./routes/cargo.routes.js')
 const routerjornadaEscala           = require('./routes/jornada_escala.routes.js')
 const routerNivelAcesso             = require('./routes/nivel_acesso.routes.js')
 const routerNivelMenu               = require('./routes/nivel_menu.routes.js')
+const routerDiasemana               = require('./routes/dia_semana.routes.js')
 
 //Importando os endpoints 
 app.use('/v1/senai/avalon/menu', routerMenu)
-/*Inserir ao criar um menu
+/* Inserir ao criar um menu
 {
 	"nome": "Analítico de Ponto",
     "icone": "fa-solid fa-house",
@@ -53,7 +54,7 @@ app.use('/v1/senai/avalon/menu', routerMenu)
 }
 */
 app.use('/v1/senai/avalon/setor', routerSetor)
-/*Inserir ao criar um setor
+/* Inserir ao criar um setor
 {
     "codigo": "SET007",
     "nome": "Operações",
@@ -62,7 +63,7 @@ app.use('/v1/senai/avalon/setor', routerSetor)
 }
 */
 app.use('/v1/senai/avalon/cargo', routerCargo)
-/*Inserir ao criar um cargo
+/* Inserir ao criar um cargo
 {
     "codigo": "CAR006",
     "nome": "Administrador de empresa",
@@ -71,7 +72,7 @@ app.use('/v1/senai/avalon/cargo', routerCargo)
 }
 */
 app.use('/v1/senai/avalon/jornada_escala', routerjornadaEscala)
-/*Inserir ao criar um jornada de escala
+/* Inserir ao criar um jornada de escala
 {
     "nome": "Jornada nativa",
     "descricao": "Registro utilizado para testar uma jornada de escala.",
@@ -80,23 +81,34 @@ app.use('/v1/senai/avalon/jornada_escala', routerjornadaEscala)
     "status": 1
 }
 */
-app.use('/v1/senai/avalon/nivel_acesso', routerNivelAcesso)
-/*Inserir ao criar um nível de acesso
+app.use('/v1/senai/avalon/menu/nivel_acesso', routerNivelAcesso)
+/* Inserir ao criar um nível de acesso
 {
     "nome": "RH2",
     "status": 1
 }
 */
-app.use('/v1/senai/avalon/nivel_menu', routerNivelMenu)
-/*Inserir ao criar um nível de menu
+app.use('/v1/senai/avalon/menu/nivel_menu', routerNivelMenu)
+/* Inserir ao criar um nível de menu
 {
     "id_nivel_acesso": 1,
     "id_menu": 2
 }
 */
 
+app.use('/v1/senai/avalon/jornada_escala/dia_semana', routerDiasemana)
+
 //Serve para inicializar a API e receber requisições
 const PORT = process.env.PORT || 8080
+/* Inserir ao criar um novo dia da semana na jornada escala
+{
+    "id_jornada_escala": 3,
+    "dia_semana": "Quinta-feira",
+    "dia_sigla": "QUIN",
+    "ativo": 1
+}
+*/
+
 
 app.listen(PORT, function(){
     console.log('API Funcionando na porta ' + PORT)

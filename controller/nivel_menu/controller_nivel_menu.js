@@ -118,14 +118,14 @@ const listarNivelMenu = async function(){
                     // Busca o Nível de Acesso pelo ID
                     let resultNivel = await controllerNivelAcesso.buscarNivelAcesso(item.id_nivel_acesso)
                     if(resultNivel.status){
-                        item.nivel_acesso = resultNivel.response.classificacao || resultNivel.response
+                        item.nivel_acesso = resultNivel.response.nivelMenu || resultNivel.response
                         delete item.id_nivel_acesso // Apaga o ID para não duplicar no JSON
                     }
 
                     // Busca o Menu pelo ID
                     let resultMenu = await controllerMenu.buscarMenu(item.id_menu)
                     if(resultMenu.status){
-                        item.menu = resultMenu.response.classificacao || resultMenu.response
+                        item.menu = resultMenu.response.nivelMenu || resultMenu.response
                         delete item.id_menu // Apaga o ID para não duplicar no JSON
                     }
                 }
@@ -133,7 +133,7 @@ const listarNivelMenu = async function(){
                 message.DEFAULT_MESSAGE.status         = message.SUCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code    = message.SUCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.response.count = result.length
-                message.DEFAULT_MESSAGE.response.classificacao = result
+                message.DEFAULT_MESSAGE.response.nivelMenu = result
 
                 return message.DEFAULT_MESSAGE //200 
             }else return message.ERROR_NOT_FOUND //404  
@@ -162,20 +162,20 @@ const buscarNivelMenu = async function(id){
                     for(let item of result){
                         let resultNivel = await controllerNivelAcesso.buscarNivelAcesso(item.id_nivel_acesso)
                         if(resultNivel.status){
-                            item.nivel_acesso = resultNivel.response.classificacao || resultNivel.response
+                            item.nivel_acesso = resultNivel.response.nivelMenu || resultNivel.response
                             delete item.id_nivel_acesso
                         }
 
                         let resultMenu = await controllerMenu.buscarMenu(item.id_menu)
                         if(resultMenu.status){
-                            item.menu = resultMenu.response.classificacao || resultMenu.response
+                            item.menu = resultMenu.response.nivelMenu || resultMenu.response
                             delete item.id_menu
                         }
                     }
 
                     message.DEFAULT_MESSAGE.status          = message.SUCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code     = message.SUCESS_RESPONSE.status_code
-                    message.DEFAULT_MESSAGE.response.classificacao = result
+                    message.DEFAULT_MESSAGE.response.nivelMenu = result
 
                     return message.DEFAULT_MESSAGE //200
                 }else{
